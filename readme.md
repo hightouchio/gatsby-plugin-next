@@ -1,4 +1,4 @@
-# gatsby-plugin-next
+# gatsby-plugin-next [![test](https://github.com/hightouchio/gatsby-plugin-next/actions/workflows/test.yml/badge.svg)](https://github.com/hightouchio/gatsby-plugin-next/actions/workflows/test.yml)
 
 > Gatsby plugin for incremental migration to Next.js by polyfilling Next.js APIs.
 
