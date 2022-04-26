@@ -8,6 +8,7 @@
 - Adds support for Next.js routing.
 - Data fetching via `getStaticPaths` and `getStaticProps` APIs.
 - Exposes TypeScript types that match Next.js ones.
+- Migrate to Next.js APIs page by page without blocking other changes to your website.
 
 ## Install
 
@@ -28,6 +29,19 @@ module.exports = {
 ```
 
 ## API
+
+- [next/head](#nexthead)
+- [next/link](#nextlink)
+- [next/router](#nextrouter)
+  - [`useRouter`](#userouter)
+  - [`router` object](#router-object)
+  - [`withRouter`](#withrouter)
+  - [TypeScript](#typescript)
+- [next/script](#nextscript)
+- [Data Fetching](#data-fetching)
+  - [API](#api-1)
+    - [`getStaticPaths`](#getstaticpaths)
+    - [`getStaticProps`](#getstaticprops)
 
 ### next/head
 
