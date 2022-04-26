@@ -1,6 +1,6 @@
 {
   "name": "gatsby-plugin-next",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Gatsby plugin for incremental migration to Next.js APIs",
   "scripts": {
     "test": "tsc --noEmit && xo",
