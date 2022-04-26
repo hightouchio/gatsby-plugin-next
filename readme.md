@@ -4,9 +4,9 @@
 
 ## Highlights
 
-- Polyfills `next/head`, `next/link`, `next/router` and `next/script`.
+- Polyfills [`next/head`](#nexthead), [`next/link`](#nextlink), [`next/router`](#nextrouter) and [`next/script`](#nextscript).
 - Adds support for Next.js routing.
-- Data fetching via `getStaticPaths` and `getStaticProps` APIs.
+- Data fetching via [`getStaticPaths`](#getstaticpaths) and [`getStaticProps`](#getstaticprops) APIs.
 - Exposes TypeScript types that match Next.js ones.
 - Migrate to Next.js APIs page by page without blocking other changes to your website.
 
@@ -79,7 +79,7 @@ Learn more in [Next.js documentation](https://nextjs.org/docs/api-reference/next
 
 Navigate between pages without triggering a full page reload.
 
-_Note:_ This component doesn't prefetch the next page on hover, because it doesn't use Gatsby's `Link` component and Gatsby doesn't expose an API to trigger prefetching.
+**Note:** This component doesn't prefetch the next page on hover, because it doesn't use Gatsby's `Link` component and Gatsby doesn't expose an API to trigger prefetching.
 
 #### href
 
@@ -351,7 +351,7 @@ Type: `function`
 
 Callback, which is executed after script is loaded.
 
-_Note:_ It can't be used with `beforeInteractive` strategy.
+**Note:** It can't be used with `beforeInteractive` strategy.
 
 #### onError
 
@@ -359,7 +359,7 @@ Type: `function`
 
 Callback, which is executed when script has failed to load.
 
-_Note:_ It can't be used with `beforeInteractive` strategy.
+**Note:** It can't be used with `beforeInteractive` strategy.
 
 ```jsx
 import Script from "next/script";
@@ -413,7 +413,7 @@ export default function Posts({ pageContext: { posts } }) {
 }
 ```
 
-_Note:_ When you will switch to the actual Next.js, don't forget to remove `pageContext`, as this is a variable specific to Gatsby.
+**Note:** When you will switch to the actual Next.js, don't forget to remove `pageContext`, as this is a variable specific to Gatsby.
 
 ```diff
 -export default function Posts({ pageContext: { posts } }) {
