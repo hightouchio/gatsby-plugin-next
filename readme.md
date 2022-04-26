@@ -364,3 +364,180 @@ export default function MyPage() {
 ```
 
 Learn more in [Next.js documentation](https://nextjs.org/docs/api-reference/next/script).
+
+### Data Fetching
+
+This plugin lets you incrementally migrate data fetching from Gatsby APIs to Next.js ones.
+All pages in `src/next-pages` directory (you need to create it yourself) can use Next.js APIs like `getStaticProps` to fetch data, while pages in `src/pages` will continue to fetch data via Gatsby's GraphQL layer.
+Files in `src/next-pages` use Next.js-style routing, like `[id].js`, with support for nested routes like `deeply/nested/posts/[id].js`.
+
+Each page in `src/next-pages` requires two files:
+
+- `posts.js` - Exports a React component to render the page.
+- `posts.data.js` - Exports `getStaticProps` to fetch the data, which will be passed to component exported from `posts.js`.
+
+For example:
+
+**posts.js**
+
+```jsx
+import React from "react";
+import Link from "next/link";
+
+export default function Posts({ pageContext: { posts } }) {
+	return (
+		<ul>
+			{posts.map((post) => (
+				<li key={post.id}>
+					<Link href={`/posts/${post.id}`}>
+						<a>{post.title}</a>
+					</Link>
+				</li>
+			))}
+		</ul>
+	);
+}
+```
+
+_Note:_ When you will switch to the actual Next.js, don't forget to remove `pageContext`, as this is a variable specific to Gatsby.
+
+```diff
+-export default function Posts({ pageContext: { posts } }) {
++export default function Posts({ posts }) {
+```
+
+**posts.data.js**
+
+```js
+import fetch from "node-fetch";
+
+export async function getStaticProps() {
+	const response = await fetch("https://my-headless-cms.com/posts");
+	const posts = await response.json();
+	//=> [{ "id": 1, "title": "Post title", "body": "..." }, ...]
+
+	return {
+		props: { posts },
+	};
+}
+```
+
+With the files above, Gatsby will generate `/posts` page with a list of posts from `getStaticProps` function. You can fetch data in any way you need, since it's just a regular function executed at build-time.
+
+Now we need to add a page for displaying each post by creating a `/posts/[id]` route:
+
+```diff
+src/next-pages/
+	- posts.js
+	- posts.data.js
++	- posts/
++		- [id].js
++		- [id].data.js
+```
+
+**[id].js**
+
+```jsx
+import React from "react";
+
+export default function Post({ pageContext: { post } }) {
+	return (
+		<div>
+			<h1>{post.title}</h1>
+			<p>{post.body}</p>
+		</div>
+	);
+}
+```
+
+Since we need to generate pages for all posts at build-time, we can use `getStaticPaths` function for providing a list of parameters to generate this page for.
+Then, `getStaticProps` function will be executed for each set of parameters and generate a separate page. For example, `/posts/1`, `/posts/2` and so on.
+
+**[id.data.js]**
+
+```js
+import fetch from "node-fetch";
+
+export async function getStaticPaths() {
+	const response = await fetch("https://my-headless-cms.com/posts");
+	const posts = await response.json();
+
+	return {
+		paths: posts.map((post) => ({
+			id: post.id,
+		})),
+	};
+}
+
+export async function getStaticProps({ params }) {
+	const response = await fetch(
+		`https://my-headless-cms.com/posts/${params.id}`,
+	);
+
+	const post = await response.json();
+
+	return {
+		props: { post },
+	};
+}
+```
+
+Done!
+
+When you've migrated all data fetching to these APIs and you're ready to switch to Next.js:
+
+1. Move all files in `src/next-pages` into `pages` directory used by Next.js (`src/pages` is also supported).
+2. Move all code from `*.data.js` files into pages themselves.
+3. Delete `src/next-pages`.
+
+Congratulations, you're running Next.js now.
+
+#### API
+
+##### getStaticPaths()
+
+Define this function when page has dynamic segments (e.g. `[id].js`) and return a list of parameters for each page.
+
+```js
+export async function getStaticPaths() {
+	return {
+		paths: [
+			{
+				params: { id: 1 },
+			},
+			{
+				params: { id: 2 },
+			},
+			// and so on
+		],
+	};
+}
+```
+
+**Note:** Only `paths` is used by this plugin, `fallback` is ignored.
+
+Learn more in [Next.js documentation](https://nextjs.org/docs/api-reference/data-fetching/get-static-paths).
+
+##### getStaticProps(context)
+
+Define this function to fetch data and return `props` object to pass to the component rendering this page.
+
+###### context
+
+Type: `object`
+
+Context object which includes `params` object returned from `getStaticPaths` for this page.
+
+```js
+export async function getStaticProps({ params }) {
+	const post = await fetchPostById();
+
+	return {
+		props: { post },
+	};
+}
+```
+
+Learn more in [Next.js documentation](https://nextjs.org/docs/api-reference/data-fetching/get-static-props).
+
+**Note:** Only `props` is used by this plugin, other keys supported in the actual `getStaticPaths` in Next.js are ignored.
