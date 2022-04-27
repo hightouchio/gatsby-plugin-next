@@ -428,7 +428,7 @@ import fetch from "node-fetch";
 export async function getStaticProps() {
 	const response = await fetch("https://my-headless-cms.com/posts");
 	const posts = await response.json();
-	//=> [{ "id": 1, "title": "Post title", "body": "..." }, ...]
+	//=> [{ id: 1, title: "Post title", body: "..." }, ...]
 
 	return {
 		props: { posts },
@@ -478,7 +478,9 @@ export async function getStaticPaths() {
 
 	return {
 		paths: posts.map((post) => ({
-			id: post.id,
+			params: {
+				id: post.id,
+			},
 		})),
 	};
 }
